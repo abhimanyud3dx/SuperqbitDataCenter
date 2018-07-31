@@ -12,7 +12,7 @@ var uri = encodeURI(uriDec);
 
 /* home page. */
 router.get('/', function(req, res, next) {
-  org.query({ query: "Select Id, Name, Type, Industry, Rating From Account where name = '' Order By LastModifiedDate DESC" })
+  org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
     .then(function(results){
       res.render('index', { records: results.records });
     });
@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* get MongoDatabses. */
-router.get('/getDatabases', function(req, res, next) {
+router.get('/getDatabases', function(request, response, next) {
   var resultArray = [];
 	MongoClient.connect(uri, function(err, db) {
 		assert.equal(null, err);
