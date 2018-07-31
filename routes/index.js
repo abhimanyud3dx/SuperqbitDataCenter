@@ -19,12 +19,17 @@ router.get('/', function(req, res, next) {
 
 });
 
-/* home page. */
+/* get MongoDatabses. */
 router.get('/getDatabases', function(req, res, next) {
-  org.query({ query: "Select Id, Name, Type, Industry, Rating From Account where name = '' Order By LastModifiedDate DESC" })
-    .then(function(results){
-      res.render('index', { records: results.records });
-    });
+  var resultArray = [];
+	MongoClient.connect(uri, function(err, db) {
+		assert.equal(null, err);
+		console.log('Connected....');
+		var adminDb = db.admin();
+		adminDb.listDatabases(function(err, result) {
+			response.send(result.databases);
+		});
+	});
 });
 
 /* Display new account form */
