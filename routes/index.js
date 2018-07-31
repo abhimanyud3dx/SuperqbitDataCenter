@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Promise = require("bluebird");
 var nforce = require('nforce');
+var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var org = require('../lib/connection');
 
