@@ -22,7 +22,7 @@ router.get('/', function(req, res, next) {
 
 /* get MongoDatabses. */
 router.get('/getDatabases', function(request, response, next) {
-  var resultArray = [];
+	var resultArray = [];
 	MongoClient.connect(uri, function(err, db) {
 		assert.equal(null, err);
 		console.log('Connected....');
@@ -32,6 +32,32 @@ router.get('/getDatabases', function(request, response, next) {
 		});
 	});
 });
+
+/* get MongoDB Data. */
+router.get('/getData', function(request, response, next) {
+  	var resultArray = [];
+	MongoClient.connect(uri, function(err, db) {
+		if(err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+		}
+		else{		   
+			console.log('Connected....');
+			
+			var dbo = db.db("sforce");  
+			var cursor = dbo.collection("Contact").find();
+			//response.send(db+'');
+			cursor.forEach(function(doc, err) {
+				assert.equal(null, err);
+				resultArray.push(doc);
+			}, function() {
+				db.close();
+				//res.render('index', {items: resultArray});
+				response.send(resultArray);
+			});
+		}
+	});
+});
+
 
 /* Display new account form */
 router.get('/new', function(req, res, next) {
