@@ -28,10 +28,8 @@ router.get('/', function(req, res, next) {
 				resultArray.push(record);
 			}, function() {
 				db.close();
-				
 				org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
 				.then(function(results){
-					console.log(results,err); 
 					res.render('index', { records: results.records , mongoRecords: resultArray });
 				});
 			});
