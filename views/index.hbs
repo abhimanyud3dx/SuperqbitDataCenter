@@ -80,8 +80,34 @@
       </tbody>
     </table>
   </div>
-  {{mongoRecords}}
-  
+  <h3> MongoDB Records </h3>
+  <table class="slds-table slds-table--bordered">
+      <thead>
+        <tr>
+		  <th scope="col"></th>
+          <th scope="col">_id</th>
+          <th scope="col">sf_Id</th>
+          <th scope="col">FirstName</th>
+          <th scope="col">LastName</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each mongoRecords}}
+        <tr>
+          <td>
+            <span class="slds-icon__container slds-icon-standard-account">
+              <svg aria-hidden="true" class="slds-icon">
+                <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+            </svg><span class="slds-assistive-text">Contact</span></span>
+          </td>
+          <td>{{this}}</td>
+		  <td>{{@key}}</td>
+          <td>{{this['sf_Id']}}</td>
+          <td>{{get this 'LastName'}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
   </div>
 </div>
 <!-- / PRIMARY CONTENT WRAPPER -->
