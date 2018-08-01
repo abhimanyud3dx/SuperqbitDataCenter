@@ -12,12 +12,31 @@ const uriDec = "mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.ne
 var uri = encodeURI(uriDec);
 
 /* home page. */
-router.get('/', function(req, res, next) {
-  org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
-    .then(function(results){
-      res.render('index', { records: results.records });
-    });
-
+router.get('/', function(req, res, next) {	
+	var resultArray = [];
+	MongoClient.connect(uri, function(err, db) {
+		if(err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+		}
+		else{		   
+			console.log('Connected....');			
+			var dbo = db.db("sforce");  
+			var cursor = dbo.collection("Contact").find();
+			//response.send(db+'');
+			cursor.forEach(function(doc, err) {
+				assert.equal(null, err);
+				resultArray.push(doc);
+			}, function() {
+				db.close();
+				
+				org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
+				.then(function(results){
+					console.log(results,err); 
+					res.render('index', { records: results.records , mongoRecords: resultArray });
+				});
+			});
+		}
+	});
 });
 
 /* get MongoDatabses. */
@@ -41,8 +60,7 @@ router.get('/getData', function(request, response, next) {
 			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
 		}
 		else{		   
-			console.log('Connected....');
-			
+			console.log('Connected....');			
 			var dbo = db.db("sforce");  
 			var cursor = dbo.collection("Contact").find();
 			//response.send(db+'');

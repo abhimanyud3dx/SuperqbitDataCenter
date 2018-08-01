@@ -52,6 +52,7 @@
 
 <!-- PRIMARY CONTENT WRAPPER -->
 <div class="myapp">
+	<h3> Salesforce Records </h3>
   <div class="slds-scrollable--x">
     <table class="slds-table slds-table--bordered">
       <thead>
@@ -74,6 +75,36 @@
           <td><a href="/{{get this 'Id'}}">{{get this 'Name'}}</a> {{{badge this 'Rating'}}}</td>
           <td>{{get this 'Type'}}</td>
           <td>{{get this 'Industry'}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  
+  <h3> MongoDB Records </h3>
+  <table class="slds-table slds-table--bordered">
+      <thead>
+        <tr>
+		  <th scope="col"></th>
+          <th scope="col">Id</th>
+          <th scope="col">sf_Id</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each mongoRecords}}
+        <tr>
+          <td>
+            <span class="slds-icon__container slds-icon-standard-account">
+              <svg aria-hidden="true" class="slds-icon">
+                <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+            </svg><span class="slds-assistive-text">Contact</span></span>
+          </td>
+          <td>{{get this '_id'}}</td>
+		  <td>{{get this 'sf_Id'}}</td>
+          <td>{{get this 'FirstName'}}</td>
+          <td>{{get this 'LastName'}}</td>
         </tr>
         {{/each}}
       </tbody>
