@@ -23,9 +23,9 @@ router.get('/', function(req, res, next) {
 			var dbo = db.db("sforce");  
 			var cursor = dbo.collection("Contact").find();
 			//response.send(db+'');
-			cursor.forEach(function(doc, err) {
+			cursor.forEach(function(record, err) {
 				assert.equal(null, err);
-				resultArray.push(doc);
+				resultArray.push(record);
 			}, function() {
 				db.close();
 				
