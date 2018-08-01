@@ -7,7 +7,7 @@ var MongoClient = require('mongodb').MongoClient;
 var org = require('../lib/connection');
 
 
-// replace the uri string with your connection string to Connect to MongoDB.
+// Connection string to Connect to MongoDB.
 const uriDec = "mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.net/";
 var uri = encodeURI(uriDec);
 
@@ -58,7 +58,6 @@ router.get('/getData', function(request, response, next) {
 	});
 });
 
-
 /* Display new account form */
 router.get('/new', function(req, res, next) {
   res.render('new');
@@ -79,20 +78,6 @@ router.post('/', function(req, res, next) {
       res.redirect('/' + account.id);
     })
 });
-
-
-router.get('/getDataBases', function(request, response,next) {  
-  var resultArray = [];
-	MongoClient.connect(uri, function(err, db) {
-		assert.equal(null, err);
-		console.log('Connected....');
-		var adminDb = db.admin();
-		adminDb.listDatabases(function(err, result) {
-			response.send(result.databases);
-		});
-	});
-});
-
 
 /* Record detail page */
 router.get('/:id', function(req, res, next) {
