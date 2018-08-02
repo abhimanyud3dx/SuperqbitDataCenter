@@ -38,10 +38,9 @@ router.get('/', function(req, res, next) {
 	});
 	
 	cron.schedule('* * * * *', function(){
-		
 		org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
 		.then(function(results){
-			res.render('index', { records: results.records , mongoRecords: resultArray });
+			console.log(results.records);
 		});
 		console.log('running a task every Second');
 	});
