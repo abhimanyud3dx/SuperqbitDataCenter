@@ -37,7 +37,7 @@ router.get('/', function(req, res, next) {
 		}
 	});
 	
-	cron.schedule('0,15,30,45 * * * * *', function(){
+	cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', function(){
 		org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC LIMIT 1" })
 		.then(function(results){
 			console.log(results.records);
