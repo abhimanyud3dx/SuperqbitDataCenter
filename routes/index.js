@@ -18,7 +18,7 @@ router.get('/getShopifyProducts', function(req, res, next) {
 	Promise.join(
     org.query({ query: "Select Id, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
     function(products) {
-		response.send(products);
+		res.send(products);
     });
 });
 
