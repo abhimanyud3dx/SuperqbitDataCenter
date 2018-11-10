@@ -13,6 +13,43 @@ const uriDec = "mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.ne
 var uri = encodeURI(uriDec);
 
 /* home page. */
+router.get('/getShopifyProducts', function(req, res, next) {	
+	  // query for record, contacts and opportunities
+	Promise.join(
+    org.query({ query: "Select Id, Name, Email, Title, Phone From Shopify_Product__c where Available__c = true"}),
+    function(products) {
+		response.send(products);
+    });
+});
+
+
+/* home page. */
+router.get('/admin', function(req, res, next) {	
+	var resultArray = [];
+	MongoClient.connect(uri, function(err, db) {
+		if(err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+		}
+		else{		   
+			console.log('Connected....');			
+			var dbo = db.db("sforce");  
+			var cursor = dbo.collection("Contact").find();
+			//response.send(db+'');
+			cursor.forEach(function(record, err) {
+				assert.equal(null, err);
+				resultArray.push(record);
+			}, function() {
+				db.close();
+				org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
+				.then(function(results){
+					res.render('index', { records: results.records , mongoRecords: resultArray });
+				});
+			});
+		}
+	});
+});
+
+/* home page. */
 router.get('/', function(req, res, next) {	
 	var resultArray = [];
 	MongoClient.connect(uri, function(err, db) {
@@ -37,13 +74,13 @@ router.get('/', function(req, res, next) {
 		}
 	});
 	
-	cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', function(){
+	//cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', function(){
 		org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC LIMIT 1" })
 		.then(function(results){
 			console.log(results.records);
 		});
 		console.log('running a task every Second');
-	});
+	//});
 });
 
 /* get MongoDatabses. */
@@ -138,7 +175,6 @@ router.get('/:id/delete', function(req, res, next) {
 
 /* Updates the record */
 router.post('/:id', function(req, res, next) {
-
   var acc = nforce.createSObject('Account');
   acc.set('Id', req.params.id);
   acc.set('Name', req.body.name);
