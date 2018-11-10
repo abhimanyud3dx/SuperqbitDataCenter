@@ -16,7 +16,7 @@ var uri = encodeURI(uriDec);
 router.get('/getShopifyProducts', function(req, res, next) {	
 	  // query for record, contacts and opportunities
 	Promise.join(
-    org.query({ query: "Select Id, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
+    org.query({ query: "Select Id, Name, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
     function(products) {
 		res.send(products);
     });
