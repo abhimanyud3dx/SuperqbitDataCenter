@@ -12,11 +12,11 @@ var cron = require('node-cron');
 const uriDec = "mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.net/";
 var uri = encodeURI(uriDec);
 
-/* home page. */
+/*  Shopify Products. */
 router.get('/getShopifyProducts', function(req, res, next) {	
 	  // query for record, contacts and opportunities
 	Promise.join(
-    org.query({ query: "Select Id, Name, Email, Title, Phone From Shopify_Product__c where Available__c = true"}),
+    org.query({ query: "Select Id, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
     function(products) {
 		response.send(products);
     });
