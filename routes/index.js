@@ -18,7 +18,17 @@ router.get('/getShopifyProducts', function(req, res, next) {
 	Promise.join(
     org.query({ query: "Select Id, Name, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
     function(products) {
-		res.send(products);
+		res.send(products.records);
+    });
+});
+
+/*  Shopify Products Detail. */
+router.get('/getShopifyProductDetail/:name', function(req, res, next) {	
+	  // query for record, contacts and opportunities
+	Promise.join(
+    org.query({ query: "Select Id, Name, API_Name__c,product_Id__c, Available__c From Shopify_Product__c where name like '%" + req.params.name + "%' "}),
+    function(products) {
+		res.send(products.records);
     });
 });
 
