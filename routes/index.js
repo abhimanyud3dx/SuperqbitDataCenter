@@ -9,7 +9,7 @@ var cron = require('node-cron');
 
 
 // Connection string to Connect to MongoDB.
-const uriDec = "mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.net/";
+const uriDec = process.env.MONGO_CONNECTION_URL; //"mongodb+srv://abhimanyuDB:godofwar101A@cluster0-zrfv4.mongodb.net/";
 var uri = encodeURI(uriDec);
 
 /*  Shopify Products. */
