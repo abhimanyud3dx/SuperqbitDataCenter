@@ -7,121 +7,144 @@ var MongoClient = require('mongodb').MongoClient;
 var org = require('../lib/connection');
 var cron = require('node-cron');
 
-
 // Connection string to Connect to MongoDB.
 const uriDec = process.env.MONGO_CONNECTION_URL;
 var uri = encodeURI(uriDec);
 
 /*  Shopify Products. */
-router.get('/getShopifyProducts', function(req, res, next) {	
-	  // query for record, contacts and opportunities
+router.get('/getShopifyProducts', function (req, res, next) {
+	// query for record, contacts and opportunities
 	Promise.join(
-    org.query({ query: "Select Id, Name, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"}),
-    function(products) {
-		res.send(products.records);
-    });
+		org.query({
+			query: "Select Id, Name, API_Name__c,product_Id__c From Shopify_Product__c where Available__c = true"
+		}),
+		function (products) {
+			res.send(products.records);
+		});
+});
+
+/*  get All Shopify Products. */
+router.get('/getAllShopifyProducts', function (req, res, next) {
+	// query for record, contacts and opportunities
+	Promise.join(
+		org.query({
+			query: "Select Id, Name, API_Name__c,product_Id__c,price__c From Shopify_Product__c"
+		}),
+		function (products) {
+			res.send(products.records);
+		});
 });
 
 /*  Shopify Products Detail. */
-router.get('/getShopifyProductDetail/:name', function(req, res, next) {	
-	  // query for record, contacts and opportunities
+router.get('/getShopifyProductDetail/:name', function (req, res, next) {
+	// query for record, contacts and opportunities
 	Promise.join(
-    org.query({ query: "Select Id, Name, API_Name__c,product_Id__c, Available__c From Shopify_Product__c where name like '%" + req.params.name + "%' "}),
-    function(products) {
-		res.send(products.records);
-    });
+		org.query({
+			query: "Select Id, Name, API_Name__c,product_Id__c, Available__c From Shopify_Product__c where name like '%" + req.params.name + "%' "
+		}),
+		function (products) {
+			res.send(products.records);
+		});
 });
 
-
-/* home page. */
-router.get('/admin', function(req, res, next) {	
+/* admin page. */
+router.get('/admin', function (req, res, next) {
 	var resultArray = [];
-	MongoClient.connect(uri, function(err, db) {
-		if(err) {
-			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-		}
-		else{		   
-			console.log('Connected....');			
-			var dbo = db.db("sforce");  
+	MongoClient.connect(uri, function (err, db) {
+		if (err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n', err);
+		} else {
+			console.log('Connected....');
+			var dbo = db.db("sforce");
 			var cursor = dbo.collection("Contact").find();
 			//response.send(db+'');
-			cursor.forEach(function(record, err) {
+			cursor.forEach(function (record, err) {
 				assert.equal(null, err);
 				resultArray.push(record);
-			}, function() {
+			}, function () {
 				db.close();
-				org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
-				.then(function(results){
-					res.render('index', { records: results.records , mongoRecords: resultArray });
-				});
+				org.query({
+						query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC"
+					})
+					.then(function (results) {
+						res.render('index', {
+							records: results.records,
+							mongoRecords: resultArray
+						});
+					});
 			});
 		}
 	});
 });
 
 /* home page. */
-router.get('/', function(req, res, next) {	
+router.get('/', function (req, res, next) {
 	var resultArray = [];
-	MongoClient.connect(uri, function(err, db) {
-		if(err) {
-			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-		}
-		else{		   
-			console.log('Connected....');			
-			var dbo = db.db("sforce");  
+	MongoClient.connect(uri, function (err, db) {
+		if (err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n', err);
+		} else {
+			console.log('Connected....');
+			var dbo = db.db("sforce");
 			var cursor = dbo.collection("Contact").find();
 			//response.send(db+'');
-			cursor.forEach(function(record, err) {
+			cursor.forEach(function (record, err) {
 				assert.equal(null, err);
 				resultArray.push(record);
-			}, function() {
+			}, function () {
 				db.close();
-				org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC" })
-				.then(function(results){
-					res.render('index', { records: results.records , mongoRecords: resultArray });
-				});
+				org.query({
+						query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC"
+					})
+					.then(function (results) {
+						res.render('index', {
+							records: results.records,
+							mongoRecords: resultArray
+						});
+					});
 			});
 		}
 	});
-	
+
 	//cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', function(){
-		org.query({ query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC LIMIT 1" })
-		.then(function(results){
+	org.query({
+			query: "Select Id, Name, Type, Industry, Rating From Account Order By LastModifiedDate DESC LIMIT 1"
+		})
+		.then(function (results) {
 			console.log(results.records);
 		});
-		console.log('running a task every Second');
+	console.log('running a task every Second');
 	//});
 });
 
 /* get MongoDatabses. */
-router.get('/getDatabases', function(request, response, next) {
+router.get('/getDatabases', function (request, response, next) {
 	var resultArray = [];
-	MongoClient.connect(uri, function(err, db) {
+	MongoClient.connect(uri, function (err, db) {
 		assert.equal(null, err);
 		console.log('Connected....');
 		var adminDb = db.admin();
-		adminDb.listDatabases(function(err, result) {
+		adminDb.listDatabases(function (err, result) {
 			response.send(result.databases);
 		});
 	});
 });
 
 /* get MongoDB Data. */
-router.get('/getData', function(request, response, next) {
-  	var resultArray = [];
-	MongoClient.connect(uri, function(err, db) {
-		if(err) {
-			console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-		}
-		else{		   
-			console.log('Connected....');			
-			var dbo = db.db("sforce");  
+router.get('/getData', function (request, response, next) {
+	var resultArray = [];
+	MongoClient.connect(uri, function (err, db) {
+		if (err) {
+			console.log('Error occurred while connecting to MongoDB Atlas...\n', err);
+		} else {
+			console.log('Connected....');
+			var dbo = db.db("sforce");
 			var cursor = dbo.collection("Contact").find();
 			//response.send(db+'');
-			cursor.forEach(function(doc, err) {
+			cursor.forEach(function (doc, err) {
 				assert.equal(null, err);
 				resultArray.push(doc);
-			}, function() {
+			}, function () {
 				db.close();
 				//res.render('index', {items: resultArray});
 				response.send(resultArray);
@@ -131,72 +154,94 @@ router.get('/getData', function(request, response, next) {
 });
 
 /* Display new account form */
-router.get('/new', function(req, res, next) {
-  res.render('new');
+router.get('/new', function (req, res, next) {
+	res.render('new');
 });
 
 /* Creates a new the record */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
 
-  var acc = nforce.createSObject('Account');
-  acc.set('Name', req.body.name);
-  acc.set('Industry', req.body.industry);
-  acc.set('Type', req.body.type);
-  acc.set('AccountNumber', req.body.accountNumber);
-  acc.set('Description', req.body.description);
+	var acc = nforce.createSObject('Account');
+	acc.set('Name', req.body.name);
+	acc.set('Industry', req.body.industry);
+	acc.set('Type', req.body.type);
+	acc.set('AccountNumber', req.body.accountNumber);
+	acc.set('Description', req.body.description);
 
-  org.insert({ sobject: acc })
-    .then(function(account){
-      res.redirect('/' + account.id);
-    })
+	org.insert({
+			sobject: acc
+		})
+		.then(function (account) {
+			res.redirect('/' + account.id);
+		})
 });
 
 /* Record detail page */
-router.get('/:id', function(req, res, next) {
-  // query for record, contacts and opportunities
-  Promise.join(
-    org.getRecord({ type: 'account', id: req.params.id }),
-    org.query({ query: "Select Id, Name, Email, Title, Phone From Contact where AccountId = '" + req.params.id + "'"}),
-    org.query({ query: "Select Id, Name, StageName, Amount, Probability From Opportunity where AccountId = '" + req.params.id + "'"}),
-    function(account, contacts, opportunities) {
-        res.render('show', { record: account, contacts: contacts.records, opps: opportunities.records });
-    });
+router.get('/:id', function (req, res, next) {
+	// query for record, contacts and opportunities
+	Promise.join(
+		org.getRecord({
+			type: 'account',
+			id: req.params.id
+		}),
+		org.query({
+			query: "Select Id, Name, Email, Title, Phone From Contact where AccountId = '" + req.params.id + "'"
+		}),
+		org.query({
+			query: "Select Id, Name, StageName, Amount, Probability From Opportunity where AccountId = '" + req.params.id + "'"
+		}),
+		function (account, contacts, opportunities) {
+			res.render('show', {
+				record: account,
+				contacts: contacts.records,
+				opps: opportunities.records
+			});
+		});
 });
 
 /* Display record update form */
-router.get('/:id/edit', function(req, res, next) {
-  org.getRecord({ id: req.params.id, type: 'Account'})
-    .then(function(account){
-      res.render('edit', { record: account });
-    });
+router.get('/:id/edit', function (req, res, next) {
+	org.getRecord({
+			id: req.params.id,
+			type: 'Account'
+		})
+		.then(function (account) {
+			res.render('edit', {
+				record: account
+			});
+		});
 });
 
 /* Display record update form */
-router.get('/:id/delete', function(req, res, next) {
+router.get('/:id/delete', function (req, res, next) {
 
-  var acc = nforce.createSObject('Account');
-  acc.set('Id', req.params.id);
+	var acc = nforce.createSObject('Account');
+	acc.set('Id', req.params.id);
 
-  org.delete({ sobject: acc })
-    .then(function(account){
-      res.redirect('/');
-    });
+	org.delete({
+			sobject: acc
+		})
+		.then(function (account) {
+			res.redirect('/');
+		});
 });
 
 /* Updates the record */
-router.post('/:id', function(req, res, next) {
-  var acc = nforce.createSObject('Account');
-  acc.set('Id', req.params.id);
-  acc.set('Name', req.body.name);
-  acc.set('Industry', req.body.industry);
-  acc.set('Type', req.body.type);
-  acc.set('AccountNumber', req.body.accountNumber);
-  acc.set('Description', req.body.description);
+router.post('/:id', function (req, res, next) {
+	var acc = nforce.createSObject('Account');
+	acc.set('Id', req.params.id);
+	acc.set('Name', req.body.name);
+	acc.set('Industry', req.body.industry);
+	acc.set('Type', req.body.type);
+	acc.set('AccountNumber', req.body.accountNumber);
+	acc.set('Description', req.body.description);
 
-  org.update({ sobject: acc })
-    .then(function(){
-      res.redirect('/' + req.params.id);
-    })
+	org.update({
+			sobject: acc
+		})
+		.then(function () {
+			res.redirect('/' + req.params.id);
+		})
 });
 
 module.exports = router;
