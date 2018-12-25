@@ -28,7 +28,7 @@ router.get('/getAllShopifyProducts', function (req, res, next) {
 	// query for record, contacts and opportunities
 	Promise.join(
 		org.query({
-			query: "Select Id, Name, API_Name__c,product_Id__c,price__c From Shopify_Product__c"
+			query: "Select Id, Name, API_Name__c,product_Id__c,price__c,Available__c From Shopify_Product__c"
 		}),
 		function (products) {
 			res.send(products.records);
